@@ -4,42 +4,47 @@ import random
 #Me lembre a forma de criar um objeto em python
 
 def main():
+    print("Bem-vindo ao jogo de campeões!")
     time1 = campeao.Time()
     time2 = campeao.Time()
 
-    jinx = campeao.Jinx()
-    garen = campeao.Garen()
-    ahri = campeao.Ahri()
-    yasuo = campeao.Yasuo()
-    darius = campeao.Darius()
-    lux = campeao.Lux()
-    zed = campeao.Zed()
-    katarina = campeao.Katarina()
+    # Criar campeões
+    katarina = campeao.Katarina()       
     teemo = campeao.Teemo()
     morgana = campeao.Morgana()
+    garen = campeao.Garen()
+    jinx = campeao.Jinx()
+    ahri = campeao.Ahri()
 
-    time1.adicionarCampeao(jinx)
-    time1.adicionarCampeao(garen)
-    time1.adicionarCampeao(ahri)
-    time1.adicionarCampeao(yasuo)
-    time1.adicionarCampeao(darius)
+    time1.adicionarCampeao(katarina)
+    time1.adicionarCampeao(teemo)   
+    time1.adicionarCampeao(morgana)
+    time2.adicionarCampeao(garen)
+    time2.adicionarCampeao(jinx)
+    time2.adicionarCampeao(ahri)
 
-    time2.adicionarCampeao(lux)
-    time2.adicionarCampeao(zed)    
-    time2.adicionarCampeao(katarina)
-    time2.adicionarCampeao(teemo)
-    time2.adicionarCampeao(morgana)
+    # Loop de batalha até que todos os campeões de um time estejam mortos
+    while True:
+        # Filtra campeões vivos
+        vivos_time1 = [c for c in time1.listaCampeoes if c.vida > 0]
+        vivos_time2 = [c for c in time2.listaCampeoes if c.vida > 0]
 
-    time1.listarTime()
-    print()
-    time1.UsarHabilidadeDeTodos()
-    print()
-    time2.listarTime()
-    print()
-    time2.UsarHabilidadeDeTodos()
+        # Verifica condição de fim de jogo
+        if not vivos_time1:
+            print("Time 2 venceu!")
+            break
+        if not vivos_time2:
+            print("Time 1 venceu!")
+            break
 
-    batalha = campeao.Batalha(random.choice(time1.listaCampeoes), random.choice(time2.listaCampeoes))
-    
+        # Escolhe aleatoriamente um campeão vivo de cada time
+        batalhador1 = random.choice(vivos_time1)
+        batalhador2 = random.choice(vivos_time2)
+
+        campeao.Batalha(batalhador1, batalhador2)
+
+
+
 
 if __name__ == "__main__":
     main()
