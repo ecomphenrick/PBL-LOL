@@ -1,8 +1,58 @@
+from abc import ABC, abstractmethod 
+import random
+
+class Observador(ABC):
+    @abstractmethod
+    def atualizar(self, evento: str):
+        pass
+
+class Estrategia(ABC):
+    @abstractmethod
+    def atacar(self, atacante, alvo):
+        pass
+
+class EstrategiaAssassino(Estrategia):
+    def atacar(self, atacante, alvo):
+        dano = 50
+        critico = random.random() < 0.3  # 30% de chance de crítico
+        if critico:
+            dano *= 2
+            print(f"{atacante.nome} acerta CRÍTICO em {alvo.nome}! Dano: {dano}")
+        else:
+            print(f"{atacante.nome} ataca {alvo.nome} causando {dano} de dano")
+        alvo.receberDano(dano)
+
+class EstrategiaAtirador(Estrategia):
+    def atacar(self, atacante, alvo):
+        dano = 40
+        print(f"{atacante.nome} atira em {alvo.nome} causando {dano} de dano")
+        alvo.receberDano(dano)
+
+class EstrategiaMago(Estrategia):
+    def atacar(self, atacante, alvo):
+        dano = 35
+        cura = 10
+        print(f"{atacante.nome} usa magia em {alvo.nome}, dano {dano}, cura {cura}")
+        alvo.receberDano(dano)
+        atacante.vida += cura
+        print(f"{atacante.nome} vida atual: {atacante.vida}")
+
 class Campeao:
     def __init__(self):
         self.nome = ""
         self.nivel = 0
         self.vida = 0
+        self.observadores = []
+        self.estrategia = None
+    
+    def definirEstrategia(self, estrategia: Estrategia):
+        self.estrategia = estrategia
+    
+    def ataqueBasico(self, alvo):
+        if self.estrategia:
+            self.estrategia.atacar(self, alvo)
+        else:
+            print(f"{self.nome} não tem uma estratégia definida!")
     
     def exibirStatus(self):
         print(f"Nome: {self.nome}")
@@ -13,7 +63,16 @@ class Campeao:
         self.vida -= dano
         if self.vida < 0:
             self.vida = 0
-        print(f"{self.nome} recebeu {dano} de dano. Vida atual: {self.vida}")
+            self.notificarObservadores(f"{self.nome} foi derrotado!")
+        else:
+            self.notificarObservadores(f"{self.nome} recebeu {dano} de dano, vida restante: {self.vida}")
+    
+    def adicionarObservador(self, observador: Observador):
+        self.observadores.append(observador)
+    
+    def notificarObservadores(self, evento: str):
+        for observador in self.observadores:
+            observador.atualizar(evento)
 
 
 class Garen(Campeao):

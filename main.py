@@ -2,8 +2,11 @@ import campeao
 import random
 
 #Me lembre a forma de criar um objeto em python
+class partida(campeao.Observador):
+    def atualizar(self, evento: str):
+        print(f"Evento na partida: {evento}")
 
-def main():
+def main(): 
     print("Bem-vindo ao jogo de campeões!")
     time1 = campeao.Time()
     time2 = campeao.Time()
@@ -16,12 +19,22 @@ def main():
     jinx = campeao.Jinx()
     ahri = campeao.Ahri()
 
+    katarina.definirEstrategia(campeao.EstrategiaAssassino())
+    teemo.definirEstrategia(campeao.EstrategiaAtirador())
+    morgana.definirEstrategia(campeao.EstrategiaMago())
+
     time1.adicionarCampeao(katarina)
     time1.adicionarCampeao(teemo)   
     time1.adicionarCampeao(morgana)
     time2.adicionarCampeao(garen)
     time2.adicionarCampeao(jinx)
     time2.adicionarCampeao(ahri)
+
+    partida_observador = partida()
+
+    for c in time1.listaCampeoes + time2.listaCampeoes:
+        c.adicionarObservador(partida_observador)
+
 
     # Loop de batalha até que todos os campeões de um time estejam mortos
     while True:
